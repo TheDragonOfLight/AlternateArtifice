@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "altarti:blocks/topaz_ore",
+      "all": "altarti:blocks/topaz_ore"
+    },
+    "model": "cube_all"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}

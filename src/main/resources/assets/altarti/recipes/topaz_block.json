@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "altarti:topaz_block"
+  },
+  "pattern": [
+    "ttt",
+    "ttt",
+    "ttt"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "t": {
+      "item": "altarti:topaz"
+    }
+  }
+}

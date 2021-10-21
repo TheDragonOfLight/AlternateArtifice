@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "__comment": "Default",
+    "layer0": "altarti:items/topaz"
+  }
+}

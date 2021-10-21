@@ -1,0 +1,16 @@
+[
+{
+  "modid": "altarti",
+  "name": "Alternate Artifice",
+  "description": "Adds new unique enchantments for your tools and weapons.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Dragon_Of_Light"],
+  "credits": "My friends, for helping me through this.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

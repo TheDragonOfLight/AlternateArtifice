@@ -1,0 +1,28 @@
+tile.artitable.name=Artificer's Table
+
+tile.topaz_ore.name=Topaz Ore
+tile.topaz_block.name=Topaz Block
+item.topaz.name=Topaz
+
+enchantment.splintershot=Splintershot
+enchantment.netshot=Net Shot
+enchantment.applepicker=Apple Picker
+enchantment.arcaneheadlamp=Arcane Headlamp
+enchantment.coldmetal=Cold Metal
+enchantment.comfortablefit=Comfortable Fit
+enchantment.sending=Sending
+enchantment.enricher=Enricher
+enchantment.executioner=Executioner
+enchantment.hotmetal=Hot Metal
+enchantment.treasurefinder=Treasure Finder
+enchantment.bionics=Bionics
+enchantment.bore=Bore
+enchantment.cobblestep=Cobble Step
+enchantment.heavy=Heavy
+enchantment.netting=Netting
+enchantment.oreinfuser=Ore Infuser
+enchantment.balloon=Balloon
+enchantment.scything=Scything
+enchantment.tiller=Tiller
+enchantment.pathmaker=Pathmaker
+enchantment.leapoffaith=Leap of Faith

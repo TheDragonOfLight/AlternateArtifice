@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "altarti:topaz_ore",
+    "count": 1
+  },
+  "pattern": [
+    " e ",
+    "ese",
+    " e "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "e": {
+      "item": "minecraft:emerald"
+    },
+    "s": {
+      "item": "minecraft:stone"
+    }
+  }
+}
