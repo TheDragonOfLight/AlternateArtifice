@@ -1,21 +1,27 @@
 package dragon.altarti;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import dragon.altarti.enchantments.*;
 import dragon.altarti.util.Reference;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockOre;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -28,6 +34,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -85,8 +92,9 @@ public class EnchantmentInit {
         if (level > 0) {
             if (event.getWorld().getBlockState(event.getPos()) == Blocks.LEAVES.getDefaultState()) {
                 Random rand = new Random();
-                if (rand.nextInt(4) != 0) {
-                    event.getPlayer().addItemStackToInventory(new ItemStack(Items.APPLE));
+                if (rand.nextInt(3) == 0) {
+                    event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                            event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.APPLE)));
                 }
             }
         }
@@ -101,7 +109,14 @@ public class EnchantmentInit {
 
         if (level > 0) {
             if (world.getLight(pos) < 7 && pos.getY() < 63) {
-                world.setBlockState(new BlockPos(pos.getX(), pos.getY()+4, pos.getZ()), Blocks.GLOWSTONE.getDefaultState());
+                for (int i = -7; i <= 7; i++) {
+                    for (int j = -7; j <= 7; j++) {
+                        for (int k = -7; k <= 7; k++) {
+                            world.getBlockState(new BlockPos(pos.getX()+i, pos.getY()+j,
+                                    pos.getZ()+k)).getBlock().setLightLevel(1.0F);
+                        }
+                    }
+                }
             }
         }
     }
@@ -170,7 +185,8 @@ public class EnchantmentInit {
                 event.getWorld().setBlockState(pos, Blocks.FARMLAND.getDefaultState());
                 Random rand = new Random();
                 if (rand.nextInt(5) == 0) {
-                    event.getEntityPlayer().addItemStackToInventory(new ItemStack(Item.getItemFromBlock(Blocks.BONE_BLOCK)));
+                    event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                            event.getPos().getY(), event.getPos().getZ(), new ItemStack(Blocks.BONE_BLOCK)));
                 }
             }
         }
@@ -188,15 +204,20 @@ public class EnchantmentInit {
                 if (rand.nextInt(10) == 0) {
                     int item = rand.nextInt(100);
                     if (item < 65) {
-                        event.getPlayer().addItemStackToInventory(new ItemStack(Items.COAL));
+                        event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                                event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.COAL)));
                     } else if (item < 85) {
-                        event.getPlayer().addItemStackToInventory(new ItemStack(Items.IRON_INGOT));
+                        event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                                event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.IRON_INGOT)));
                     } else if (item < 95) {
-                        event.getPlayer().addItemStackToInventory(new ItemStack(Items.GOLD_INGOT));
+                        event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                                event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.GOLD_INGOT)));
                     } else if (item < 98) {
-                        event.getPlayer().addItemStackToInventory(new ItemStack(Items.DIAMOND));
+                        event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                                event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.DIAMOND)));
                     } else {
-                        event.getPlayer().addItemStackToInventory(new ItemStack(Items.EMERALD));
+                        event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                                event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.EMERALD)));
                     }
                 }
             }
@@ -216,12 +237,41 @@ public class EnchantmentInit {
     }
 
     @SubscribeEvent
-    public static void bore(LivingEvent.LivingUpdateEvent event) {
-        EntityLivingBase living = event.getEntityLiving();
+    public static void bore(BlockEvent.BreakEvent event) {
+        EntityLivingBase living = event.getPlayer();
         int level = EnchantmentHelper.getMaxEnchantmentLevel(BORE, living);
 
         if (level > 0) {
-            living.addPotionEffect(new PotionEffect(Potion.getPotionById(3), 40, 3));
+            int rotation = MathHelper.floor((double) (living.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+            float pitch = living.rotationPitch;
+            for (int i = 1; i <= 10; i++) {
+                if (pitch <= -30 && pitch >= -90) {
+                    event.getWorld().destroyBlock(new BlockPos(event.getPos().getX(), event.getPos().getY()+i,
+                            event.getPos().getZ()), true);
+                } else if (pitch >= 50 && pitch <= 90) {
+                    event.getWorld().destroyBlock(new BlockPos(event.getPos().getX(), event.getPos().getY()-i,
+                            event.getPos().getZ()), true);
+                }else {
+                    switch (rotation) {
+                        case 0:
+                            event.getWorld().destroyBlock(new BlockPos(event.getPos().getX(), event.getPos().getY(),
+                                    event.getPos().getZ()+i), true);
+                            break;
+                        case 1:
+                            event.getWorld().destroyBlock(new BlockPos(event.getPos().getX()-i,
+                                    event.getPos().getY(), event.getPos().getZ()), true);
+                            break;
+                        case 2:
+                            event.getWorld().destroyBlock(new BlockPos(event.getPos().getX(), event.getPos().getY(),
+                                    event.getPos().getZ()-i), true);
+                            break;
+                        case 3:
+                            event.getWorld().destroyBlock(new BlockPos(event.getPos().getX()+i,
+                                    event.getPos().getY(), event.getPos().getZ()), true);
+                            break;
+                    }
+                }
+            }
         }
     }
 
@@ -235,17 +285,26 @@ public class EnchantmentInit {
         if (level > 0) {
             if (living.onGround) {
                 float f = (float) Math.min(16, 2 + level);
-                BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(0, 0, 0);
+                BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos
+                        (0, 0, 0);
 
-                for (BlockPos.MutableBlockPos blockpos$mutableblockpos1 : BlockPos.getAllInBoxMutable(pos.add((double) (-f), -1.0D, (double) (-f)), pos.add((double) f, -1.0D, (double) f))) {
-                    if (blockpos$mutableblockpos1.distanceSqToCenter(living.posX, living.posY, living.posZ) <= (double) (f * f)) {
-                        blockpos$mutableblockpos.setPos(blockpos$mutableblockpos1.getX(), blockpos$mutableblockpos1.getY() + 1, blockpos$mutableblockpos1.getZ());
+                for (BlockPos.MutableBlockPos blockpos$mutableblockpos1 : BlockPos.getAllInBoxMutable(pos.add
+                        ((double) (-f), -1.0D, (double) (-f)), pos.add
+                        ((double) f, -1.0D, (double) f))) {
+                    if (blockpos$mutableblockpos1.distanceSqToCenter(living.posX, living.posY, living.posZ) <=
+                            (double) (f * f)) {
+                        blockpos$mutableblockpos.setPos(blockpos$mutableblockpos1.getX(),
+                                blockpos$mutableblockpos1.getY() + 1, blockpos$mutableblockpos1.getZ());
                         IBlockState iblockstate = world.getBlockState(blockpos$mutableblockpos);
 
                         if (iblockstate.getMaterial() == Material.AIR) {
                             IBlockState iblockstate1 = world.getBlockState(blockpos$mutableblockpos1);
 
-                            if (iblockstate1.getMaterial() == Material.LAVA && (iblockstate1.getBlock() == Blocks.LAVA || iblockstate1.getBlock() == Blocks.FLOWING_LAVA) && ((Integer) iblockstate1.getValue(BlockLiquid.LEVEL)).intValue() == 0 && world.mayPlace(Blocks.COBBLESTONE, blockpos$mutableblockpos1, false, EnumFacing.DOWN, (Entity) null)) {
+                            if (iblockstate1.getMaterial() == Material.LAVA && (iblockstate1.getBlock() == Blocks.LAVA
+                                    || iblockstate1.getBlock() == Blocks.FLOWING_LAVA) &&
+                                    ((Integer) iblockstate1.getValue(BlockLiquid.LEVEL)).intValue() == 0 &&
+                                    world.mayPlace(Blocks.COBBLESTONE, blockpos$mutableblockpos1, false,
+                                            EnumFacing.DOWN, (Entity) null)) {
                                 world.setBlockState(blockpos$mutableblockpos1, Blocks.COBBLESTONE.getDefaultState());
                             }
                         }
@@ -275,18 +334,11 @@ public class EnchantmentInit {
         int level = EnchantmentHelper.getMaxEnchantmentLevel(OREINFUSER, living);
 
         if (level > 0) {
-            if (event.getWorld().getBlockState(event.getPos()) == Blocks.DIAMOND_ORE.getDefaultState()) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.DIAMOND, 8));
-            } else if (event.getWorld().getBlockState(event.getPos()) == Blocks.EMERALD_ORE.getDefaultState()) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.EMERALD, 8));
-            } else if (event.getWorld().getBlockState(event.getPos()) == Blocks.COAL_ORE.getDefaultState()) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.COAL, 8));
-            } else if (event.getWorld().getBlockState(event.getPos()) == Blocks.REDSTONE_ORE.getDefaultState()) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.REDSTONE, 8));
-            } else if (event.getWorld().getBlockState(event.getPos()) == Blocks.QUARTZ_ORE.getDefaultState()) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.QUARTZ, 8));
-            }  else if (event.getWorld().getBlockState(event.getPos()) == Blocks.LAPIS_ORE.getDefaultState()) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.DYE, 8, 4));
+            if (event.getPlayer().canHarvestBlock(event.getWorld().getBlockState(event.getPos()))) {
+                if (event.getWorld().getBlockState(event.getPos()).getBlock() == ModBlocks.oreTopaz) {
+                    event.getPlayer().addExperienceLevel(20);
+                    event.getPlayer().playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1, 1.0F);
+                }
             }
         }
     }
@@ -311,7 +363,8 @@ public class EnchantmentInit {
             if (event.getWorld().getBlockState(event.getPos()) == Blocks.TALLGRASS.getPlant(event.getWorld(), event.getPos())) {
                 Random rand = new Random();
                 if (rand.nextInt(4) != 0) {
-                    event.getPlayer().addItemStackToInventory(new ItemStack(Items.WHEAT));
+                    event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                            event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.WHEAT)));
                 }
             }
         }
@@ -362,7 +415,8 @@ public class EnchantmentInit {
         if ((event.getWorld().getBlockState(pos) == Blocks.DIRT.getDefaultState() || event.getWorld().getBlockState(pos) == Blocks.GRASS.getDefaultState()) && level > 0) {
             Random rand = new Random();
             if (rand.nextInt(250) == 0) {
-                event.getPlayer().addItemStackToInventory(new ItemStack(Items.NETHER_STAR));
+                event.getWorld().spawnEntity(new EntityItem(event.getWorld(), event.getPos().getX(),
+                        event.getPos().getY(), event.getPos().getZ(), new ItemStack(Items.NETHER_STAR)));
             }
         }
     }
