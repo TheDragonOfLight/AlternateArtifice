@@ -23,8 +23,8 @@ public class OreGenerator implements IWorldGenerator {
             case -1:
                 break;
             case 0:
-                runGenerator(ModBlocks.oreTopaz.getDefaultState(), 1, 1, 0,
-                        10, BlockMatcher.forBlock(Blocks.STONE), world, random, chunkX, chunkZ);
+                runGenerator(ModBlocks.oreTopaz.getDefaultState(), 1, 1, 5,
+                        15, BlockMatcher.forBlock(Blocks.STONE), world, random, chunkX, chunkZ);
                 break;
             case 1:
                 break;
@@ -44,11 +44,7 @@ public class OreGenerator implements IWorldGenerator {
             int y = minHeight + rand.nextInt(heightDiff);
             int z = chunk_Z * 16 + rand.nextInt(16);
 
-            if (rand.nextInt(9) == 0) {
-                world.setBlockState(new BlockPos(x, y, z), ModBlocks.oreTopaz.getDefaultState());
-            } else {
-                world.setBlockState(new BlockPos(x, y, z), Blocks.STONE.getDefaultState());
-            }
+            world.setBlockState(new BlockPos(x, y, z), ModBlocks.oreTopaz.getDefaultState());
         }
     }
 }
