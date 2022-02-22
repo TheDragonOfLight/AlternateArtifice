@@ -6,5 +6,5 @@ This is A mod that I created as a little personal project, as I wanted to have t
 - Run the forge version of minecraft.    
 
 ## Credits:
-Art was done by my friend: Jamesplaysgamez  
-Russian localization done by CurseForge member: eert3n
+- Art was done by my friend: Jamesplaysgamez  
+- Russian localization done by CurseForge member: eert3n
