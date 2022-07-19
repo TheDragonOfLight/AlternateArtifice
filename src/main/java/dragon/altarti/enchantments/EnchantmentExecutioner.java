@@ -4,10 +4,11 @@ import dragon.altarti.EnchantmentInit;
 import dragon.altarti.util.Reference;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.*;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
@@ -57,13 +58,23 @@ public class EnchantmentExecutioner extends Enchantment {
 
     @Override
     public void onEntityDamaged(EntityLivingBase user, Entity target, int level) {
-        if (!target.isDead) {
-            Random rand = new Random();
-            if (rand.nextInt(4) == 0) {
-                EntityLivingBase targetBase = (EntityLivingBase) target;
-                float executionerDamage = ((targetBase.getMaxHealth() - targetBase.getHealth()) / 3);
-
-                targetBase.setHealth(targetBase.getHealth() - executionerDamage);
+        if (target instanceof EntityCreature || (target instanceof MultiPartEntityPart)) {
+            if (!target.isDead) {
+                EntityLivingBase targetBase;
+                if (target instanceof EntityCreature) {
+                    targetBase = (EntityLivingBase) target;
+                    if (targetBase.getHealth() <= (targetBase.getMaxHealth() / 3)) {
+                        targetBase.setHealth(0);
+                    }
+                } else {
+                    IEntityMultiPart iEntityMultiPart = ((MultiPartEntityPart) target).parent;
+                    if (iEntityMultiPart instanceof EntityLivingBase) {
+                        targetBase = (EntityLivingBase) iEntityMultiPart;
+                        if (targetBase.getHealth() <= (targetBase.getMaxHealth() / 3)) {
+                            targetBase.setHealth(0);
+                        }
+                    }
+                }
             }
         }
     }

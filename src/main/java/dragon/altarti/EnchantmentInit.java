@@ -147,7 +147,7 @@ public class EnchantmentInit {
         if (level > 0) {
             if (living.isSwingInProgress) {
                 living.getHeldItemMainhand().damageItem(1, living);
-                int rotation = MathHelper.floor((double) (living.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+                int rotation = MathHelper.floor((double) (living.rotationYaw * 8.0F / 360.0F) + 0.5D) & 7;
                 float pitch = living.rotationPitch;
                 if (pitch <= -30 && pitch >= -90) {
                     living.addVelocity(0.0, 0.40, 0.0);
@@ -159,13 +159,29 @@ public class EnchantmentInit {
                             living.addVelocity(0.0, 0.1, 0.4);
                             break;
                         case 1:
-                            living.addVelocity(-0.4, 0.1, 0.0);
+                            living.addVelocity(-0.2, 0.05, 0.0);
+                            living.addVelocity(0.0, 0.05, 0.2);
                             break;
                         case 2:
-                            living.addVelocity(0.0, 0.1, -0.4);
+                            living.addVelocity(-0.4, 0.1, 0.0);
                             break;
                         case 3:
+                            living.addVelocity(-0.2, 0.05, 0.0);
+                            living.addVelocity(0.0, 0.05, -0.2);
+                            break;
+                        case 4:
+                            living.addVelocity(0.0, 0.1, -0.4);
+                            break;
+                        case 5:
+                            living.addVelocity(0.0, 0.05, -0.2);
+                            living.addVelocity(0.2, 0.05, 0.0);
+                            break;
+                        case 6:
                             living.addVelocity(0.4, 0.1, 0.0);
+                            break;
+                        case 7:
+                            living.addVelocity(0.2, 0.05, 0.0);
+                            living.addVelocity(0.0, 0.05, 0.2);
                             break;
                     }
                 }
